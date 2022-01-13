@@ -13,6 +13,7 @@ namespace Budy.Controllers
 {
     // PROTPTYPE CONTROLLER!
     
+    
     [Route("api/[controller]")]
     [ApiController]
     public class IdentityController : ControllerBase
@@ -91,7 +92,7 @@ namespace Budy.Controllers
             }
         }
 
-        public bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512(passwordSalt))
             {

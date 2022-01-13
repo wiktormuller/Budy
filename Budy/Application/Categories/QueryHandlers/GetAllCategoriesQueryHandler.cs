@@ -1,24 +1,32 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Budy.Application.Categories.Queries;
 using Budy.Application.Categories.Responses;
+using Budy.Application.Interfaces;
 using MediatR;
 
 namespace Budy.Application.Categories.QueryHandlers
 {
     public class GetAllCategoriesQueryHandler : IRequestHandler<GetAllCategoriesQuery, List<CategoryResponse>>
     {
-        public GetAllCategoriesQueryHandler()
+        private readonly ICategoriesRepository _categoriesRepository;
+        
+        public GetAllCategoriesQueryHandler(ICategoriesRepository categoriesRepository)
         {
-            
+            _categoriesRepository = categoriesRepository;
         }
 
-        public Task<List<CategoryResponse>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
+        public async Task<List<CategoryResponse>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
         {
-            var result = new List<CategoryResponse>();
+            var categories = await _categoriesRepository.GetAll();
 
-            return Task.FromResult(result);
+            var result = categories
+                .Select(x => new CategoryResponse(x.Id, x.Name))
+                .ToList();
+
+            return result;
         }
     }
 }

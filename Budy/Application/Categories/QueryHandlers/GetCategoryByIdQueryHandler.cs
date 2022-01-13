@@ -1,18 +1,35 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Budy.Application.Categories.Queries;
 using Budy.Application.Categories.Responses;
+using Budy.Application.Interfaces;
 using MediatR;
 
 namespace Budy.Application.Categories.QueryHandlers
 {
     public class GetCategoryByIdQueryHandler : IRequestHandler<GetCategoryByIdQuery,CategoryResponse>
     {
-        public Task<CategoryResponse> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
-        {
-            var result = new CategoryResponse();
+        private readonly ICategoriesRepository _categoriesRepository;
 
-            return Task.FromResult(result);
+        public GetCategoryByIdQueryHandler(ICategoriesRepository categoriesRepository)
+        {
+            _categoriesRepository = categoriesRepository;
+        }
+
+        public async Task<CategoryResponse> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
+        {
+            if (!await _categoriesRepository.Exists(request.Id))
+            {
+                throw new ArgumentException(nameof(request.Id));
+                // @TODO Throw Domain Exception
+            }
+            
+            var category = await _categoriesRepository.GetById(request.Id);
+
+            var result = new CategoryResponse(category.Id, category.Name);
+
+            return result;
         }
     }
 }

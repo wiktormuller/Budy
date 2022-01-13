@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Budy.Application.Income.Queries
 {
-    public class GetAllIncomeQuery : IRequest<List<IncomeResponse>>
+    public class GetAllIncomesQuery : IRequest<List<IncomeResponse>>
     {
         
     }

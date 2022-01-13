@@ -1,24 +1,32 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Budy.Application.Expenses.Queries;
 using Budy.Application.Expenses.Responses;
+using Budy.Application.Interfaces;
 using MediatR;
 
 namespace Budy.Application.Expenses.QueryHandlers
 {
     public class GetAllExpensesQueryHandler : IRequestHandler<GetAllExpensesQuery, List<ExpenseResponse>>
     {
-        public GetAllExpensesQueryHandler()
+        private readonly IExpensesRepository _expensesRepository;
+        
+        public GetAllExpensesQueryHandler(IExpensesRepository expensesRepository)
         {
-            
+            _expensesRepository = expensesRepository;
         }
 
-        public Task<List<ExpenseResponse>> Handle(GetAllExpensesQuery request, CancellationToken cancellationToken)
+        public async Task<List<ExpenseResponse>> Handle(GetAllExpensesQuery request, CancellationToken cancellationToken)
         {
-            var result = new List<ExpenseResponse>();
+            var expenses = await _expensesRepository.GetAll();
 
-            return Task.FromResult(result);
+            var result = expenses
+                .Select(x => new ExpenseResponse(x.Id, x.Name, x.Amount, x.OccuredAt, x.Category.Name))
+                .ToList();
+
+            return result;
         }
     }
 }

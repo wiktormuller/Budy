@@ -1,22 +1,40 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Budy.Application.Expenses.Commands;
+using Budy.Application.Interfaces;
+using Budy.Domain.Entities;
 using MediatR;
 
 namespace Budy.Application.Expenses.CommandHandlers
 {
     public class CreateExpenseCommandHandler : IRequestHandler<CreateExpenseCommand, int>
     {
-        public CreateExpenseCommandHandler()
+        private readonly IExpensesRepository _expensesRepository;
+        private readonly ICategoriesRepository _categoriesRepository;
+        
+        public CreateExpenseCommandHandler(IExpensesRepository expensesRepository, 
+            ICategoriesRepository categoriesRepository)
         {
-            
+            _expensesRepository = expensesRepository;
+            _categoriesRepository = categoriesRepository;
         }
 
-        public Task<int> Handle(CreateExpenseCommand request, CancellationToken cancellationToken)
+        public async Task<int> Handle(CreateExpenseCommand request, CancellationToken cancellationToken)
         {
-            var result = 123;
+            if (!await _categoriesRepository.Exists(request.CategoryId))
+            {
+                //throw CategoryNotFoundException.ForId(request.CategoryId);
+                throw new ArgumentException();
+            }
 
-            return Task.FromResult(result);
+            var category = await _categoriesRepository.GetById(request.CategoryId);
+            
+            var expense = new Expense(request.Name, request.Amount, request.OccuredAt, category);
+
+            var expenseId = await _expensesRepository.Create(expense);
+
+            return expenseId;
         }
     }
 }

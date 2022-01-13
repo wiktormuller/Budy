@@ -9,5 +9,21 @@ namespace Budy.Domain.Entities
         public decimal Amount { get; set; }
         public DateTime OccuredAt { get; set; }
         public Category Category { get; set; }
+
+        public Expense(string name, decimal amount, DateTime occuredAt, Category category)
+        {
+            Name = name;
+            Amount = amount;
+            OccuredAt = occuredAt;
+            Category = category;
+        }
+
+        public void BasicUpdate(string name, decimal amount, DateTime occuredAt, Category category)
+        {
+            Name = name;
+            Amount = amount;
+            OccuredAt = occuredAt;
+            Category = category;
+        }
     }
 }

@@ -8,6 +8,15 @@ namespace Budy.Application.Income.Responses
         public string Name { get; set; }
         public decimal Amount { get; set; }
         public DateTime OccuredAt { get; set; }
-        public int CategoryId { get; set; }
+        public string CategoryName { get; set; }
+
+        public IncomeResponse(int id, string name, decimal amount, DateTime occuredAt, string categoryName)
+        {
+            Id = id;
+            Name = name;
+            Amount = amount;
+            OccuredAt = occuredAt;
+            CategoryName = categoryName;
+        }
     }
 }

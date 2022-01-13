@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Budy.Application.Expenses.Commands;
+using Budy.Application.Expenses.Filters;
 using Budy.Application.Expenses.Queries;
 using Budy.Application.Expenses.Requests;
 using Budy.Application.Expenses.Responses;
@@ -22,14 +23,14 @@ namespace Budy.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ExpenseResponse>>> GetAll()
+        public async Task<ActionResult<List<ExpenseResponse>>> GetAll([FromQuery] GetAllExpensesFilter filter)
         {
             var query = new GetAllExpensesQuery();
             
             return Ok(await _mediator.Send(query));
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int:min(1)}")]
         public async Task<ActionResult<ExpenseResponse>> GetById(int id)
         {
             try

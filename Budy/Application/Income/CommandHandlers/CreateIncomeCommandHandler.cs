@@ -1,27 +1,40 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Budy.Application.Income.Commands;
+using Budy.Application.Interfaces;
+using Budy.Infrastructure.Repositories;
 using MediatR;
 
 namespace Budy.Application.Income.CommandHandlers
 {
     public class CreateIncomeCommandHandler : IRequestHandler<CreateIncomeCommand, int>
     {
-        public CreateIncomeCommandHandler()
+        private readonly IIncomesRepository _incomesRepository;
+        private readonly ICategoriesRepository _categoriesRepository;
+        
+        public CreateIncomeCommandHandler(IIncomesRepository incomesRepository, 
+            ICategoriesRepository categoriesRepository)
         {
-                
+            _incomesRepository = incomesRepository;
+            _categoriesRepository = categoriesRepository;
         }
 
-        public int Handle(CreateIncomeCommand command)
+        public async Task<int> Handle(CreateIncomeCommand request, CancellationToken cancellationToken)
         {
-            return 123;
-        }
+            if (!await _categoriesRepository.Exists(request.CategoryId))
+            {
+                //throw CategoryNotFoundException.ForId(request.CategoryId);
+                throw new ArgumentException();
+            }
 
-        public Task<int> Handle(CreateIncomeCommand request, CancellationToken cancellationToken)
-        {
-            var result = 123;
+            var category = await _categoriesRepository.GetById(request.CategoryId);
 
-            return Task.FromResult(result);
+            var income = new Domain.Entities.Income(request.Name, request.Amount, request.OccuredAt, category);
+
+            var incomeId = await _incomesRepository.Create(income);
+
+            return incomeId;
         }
     }
 }

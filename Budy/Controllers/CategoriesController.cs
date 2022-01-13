@@ -29,7 +29,7 @@ namespace Budy.Controllers
             return Ok(await _mediator.Send(query));
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int:min(1)}")]
         public async Task<ActionResult<CategoryResponse>> GetById(int id)
         {
             try
