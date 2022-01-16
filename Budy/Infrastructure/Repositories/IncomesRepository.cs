@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Budy.Application.Interfaces;
 using Budy.Domain.Entities;
@@ -23,11 +25,18 @@ namespace Budy.Infrastructure.Repositories
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task<List<Income>> GetAll()
+        public async Task<List<Income>> GetAll(DateTime? untilBalanceDateTime)
         {
-            return await _context.Incomes
+            var query = _context.Incomes
                 .Include(x => x.Category)
-                .ToListAsync();
+                .AsQueryable();
+            
+            if (untilBalanceDateTime is not null)
+            {
+                query = query.Where(x => x.OccuredAt <= untilBalanceDateTime);
+            }
+            
+            return await query.ToListAsync();
         }
 
         public async Task<int> Create(Income income)

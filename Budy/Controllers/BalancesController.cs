@@ -30,9 +30,9 @@ namespace Budy.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<BalanceResponse>> GetBalanace(GetBalanceFilter filter)
+        public async Task<ActionResult<BalanceResponse>> GetBalance(GetBalanceFilter filter)
         {
-            var query = new GetBalanceQuery();
+            var query = new GetBalanceQuery(filter.BalanceDateTime);
 
             return Ok(await _mediator.Send(query));
         }

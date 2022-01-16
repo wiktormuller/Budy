@@ -20,7 +20,7 @@ namespace Budy.Application.Income.QueryHandlers
 
         public async Task<List<IncomeResponse>> Handle(GetAllIncomesQuery request, CancellationToken cancellationToken)
         {
-            var incomes = await _incomesRepository.GetAll();
+            var incomes = await _incomesRepository.GetAll(null);
 
             var result = incomes
                 .Select(x => new IncomeResponse(x.Id, x.Name, x.Amount, x.OccuredAt, x.Category.Name))

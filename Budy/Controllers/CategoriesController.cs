@@ -6,6 +6,7 @@ using Budy.Application.Categories.Commands;
 using Budy.Application.Categories.Queries;
 using Budy.Application.Categories.Requests;
 using Budy.Application.Categories.Responses;
+using Budy.Domain.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,9 +38,9 @@ namespace Budy.Controllers
                 var query = new GetCategoryByIdQuery(id);
                 return Ok(await _mediator.Send(query));
             }
-            catch (Exception e)
+            catch (CategoryNotFoundException e)
             {
-                return NotFound();
+                return NotFound(e.Message);
             }
         }
 
@@ -51,21 +52,14 @@ namespace Budy.Controllers
                 return BadRequest(ModelState);
             }
             
-            try
+            var command = new CreateCategoryCommand
             {
-                var command = new CreateCategoryCommand
-                {
-                    Name = request.Name
-                };
+                Name = request.Name
+            };
 
-                var categoryId = await _mediator.Send(command);
+            var categoryId = await _mediator.Send(command);
 
-                return CreatedAtAction(nameof(GetById), new {Id = categoryId});
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            return CreatedAtAction(nameof(GetById), new {Id = categoryId});
         }
 
         [HttpPut("{id}")]
@@ -87,9 +81,9 @@ namespace Budy.Controllers
                 
                 return NoContent();
             }
-            catch (Exception e)
+            catch (CategoryNotFoundException e)
             {
-                return NotFound();
+                return NotFound(e.Message);
             }
         }
 
@@ -103,9 +97,9 @@ namespace Budy.Controllers
 
                 return NoContent();
             }
-            catch (Exception e)
+            catch (CategoryNotFoundException e)
             {
-                return NotFound();
+                return NotFound(e.Message);
             }
         }
     }

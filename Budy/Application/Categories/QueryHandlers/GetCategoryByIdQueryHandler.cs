@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Budy.Application.Categories.Queries;
 using Budy.Application.Categories.Responses;
 using Budy.Application.Interfaces;
+using Budy.Domain.Exceptions;
 using MediatR;
 
 namespace Budy.Application.Categories.QueryHandlers
@@ -21,8 +22,7 @@ namespace Budy.Application.Categories.QueryHandlers
         {
             if (!await _categoriesRepository.Exists(request.Id))
             {
-                throw new ArgumentException(nameof(request.Id));
-                // @TODO Throw Domain Exception
+                throw CategoryNotFoundException.ForId(request.Id);
             }
             
             var category = await _categoriesRepository.GetById(request.Id);

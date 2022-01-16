@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Budy.Application.Income.Commands;
 using Budy.Application.Interfaces;
+using Budy.Domain.Exceptions;
 using MediatR;
 
 namespace Budy.Application.Income.CommandHandlers
@@ -20,8 +21,7 @@ namespace Budy.Application.Income.CommandHandlers
         {
             if (! await _incomesRepository.Exists(request.Id))
             {
-                // throw IncomeNotFoundException.ForId(request.Id);
-                throw new ArgumentException();
+                throw IncomeNotFoundException.ForId(request.Id);
             }
 
             await _incomesRepository.Delete(request.Id);

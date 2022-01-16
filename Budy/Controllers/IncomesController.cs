@@ -6,6 +6,7 @@ using Budy.Application.Income.Filters;
 using Budy.Application.Income.Queries;
 using Budy.Application.Income.Requests;
 using Budy.Application.Income.Responses;
+using Budy.Domain.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,9 +39,9 @@ namespace Budy.Controllers
                 var query = new GetIncomeByIdQuery(id);
                 return Ok(await _mediator.Send(query));
             }
-            catch (Exception e)
+            catch (IncomeNotFoundException e)
             {
-                return NotFound();
+                return NotFound(e.Message);
             }
         }
 
@@ -78,7 +79,7 @@ namespace Budy.Controllers
             {
                 return BadRequest(ModelState);
             }
-            
+
             try
             {
                 var command = new EditIncomeCommand
@@ -94,9 +95,12 @@ namespace Budy.Controllers
 
                 return NoContent();
             }
-            catch (Exception e)
+            catch (IncomeNotFoundException e)
             {
-                //return NotFound(); @ TODO
+                return NotFound(e.Message);
+            }
+            catch (CategoryNotFoundException e)
+            {
                 return BadRequest(e.Message);
             }
         }
@@ -114,9 +118,9 @@ namespace Budy.Controllers
 
                 return NoContent();
             }
-            catch (Exception e)
+            catch (IncomeNotFoundException e)
             {
-                return NotFound();
+                return NotFound(e.Message);
             }
         }
     }

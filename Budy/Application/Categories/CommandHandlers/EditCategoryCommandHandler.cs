@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Budy.Application.Categories.Commands;
 using Budy.Application.Interfaces;
+using Budy.Domain.Exceptions;
 using MediatR;
 
 namespace Budy.Application.Categories.CommandHandlers
@@ -20,8 +21,7 @@ namespace Budy.Application.Categories.CommandHandlers
         {
             if (! await _categoriesRepository.Exists(request.Id))
             {
-                //return CategoryNotFoundException.ForId(request.Id);
-                throw new ArgumentException();
+                throw CategoryNotFoundException.ForId(request.Id);
             }
             
             var category = await _categoriesRepository.GetById(request.Id);

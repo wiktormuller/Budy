@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Budy.Application.Income.Queries;
 using Budy.Application.Income.Responses;
 using Budy.Application.Interfaces;
+using Budy.Domain.Exceptions;
 using MediatR;
 
 namespace Budy.Application.Income.QueryHandlers
@@ -21,8 +22,7 @@ namespace Budy.Application.Income.QueryHandlers
         {
             if (!await _incomesRepository.Exists(request.Id))
             {
-                throw new ArgumentException(nameof(request.Id));
-                // @TODO Throw Domain Exception
+                throw IncomeNotFoundException.ForId(request.Id);
             }
             
             var income = await _incomesRepository.GetById(request.Id);

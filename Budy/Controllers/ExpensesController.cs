@@ -6,6 +6,7 @@ using Budy.Application.Expenses.Filters;
 using Budy.Application.Expenses.Queries;
 using Budy.Application.Expenses.Requests;
 using Budy.Application.Expenses.Responses;
+using Budy.Domain.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,11 +37,11 @@ namespace Budy.Controllers
             try
             {
                 var query = new GetExpenseByIdQuery(id);
-                return Ok(_mediator.Send(query));
+                return Ok(await _mediator.Send(query));
             }
-            catch (Exception e)
+            catch (ExpenseNotFoundException e)
             {
-                return NotFound();
+                return NotFound(e.Message);
             }
         }
 
@@ -65,7 +66,7 @@ namespace Budy.Controllers
                 
                 return CreatedAtAction(nameof(GetById), new {Id = expenseId});
             }
-            catch (Exception e)
+            catch (CategoryNotFoundException e)
             {
                 return BadRequest(e.Message);
             }
@@ -78,7 +79,7 @@ namespace Budy.Controllers
             {
                 return BadRequest(ModelState);
             }
-            
+
             try
             {
                 var command = new EditExpenseCommand
@@ -94,9 +95,12 @@ namespace Budy.Controllers
 
                 return NoContent();
             }
-            catch (Exception e)
+            catch (ExpenseNotFoundException e)
             {
-                // return NotFound(); @ TODO
+                return NotFound(e.Message);
+            }
+            catch (CategoryNotFoundException e)
+            {
                 return BadRequest(e.Message);
             }
         }
@@ -111,9 +115,9 @@ namespace Budy.Controllers
 
                 return NoContent();
             }
-            catch (Exception e)
+            catch (ExpenseNotFoundException e)
             {
-                return NotFound();
+                return NotFound(e.Message);
             }
         }
     }

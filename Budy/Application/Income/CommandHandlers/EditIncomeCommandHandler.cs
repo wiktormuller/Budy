@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Budy.Application.Income.Commands;
 using Budy.Application.Interfaces;
+using Budy.Domain.Exceptions;
 using MediatR;
 
 namespace Budy.Application.Income.CommandHandlers
@@ -23,8 +24,12 @@ namespace Budy.Application.Income.CommandHandlers
         {
             if (!await _categoriesRepository.Exists(request.CategoryId))
             {
-                // throw CategoryNotFoundException.ForId(request.Id);
-                throw new ArgumentException();
+                throw CategoryNotFoundException.ForId(request.Id);
+            }
+            
+            if (!await _categoriesRepository.Exists(request.CategoryId))
+            {
+                throw CategoryNotFoundException.ForId(request.CategoryId);
             }
 
             var income = await _incomesRepository.GetById(request.Id);

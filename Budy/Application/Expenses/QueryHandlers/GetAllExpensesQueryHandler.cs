@@ -20,7 +20,7 @@ namespace Budy.Application.Expenses.QueryHandlers
 
         public async Task<List<ExpenseResponse>> Handle(GetAllExpensesQuery request, CancellationToken cancellationToken)
         {
-            var expenses = await _expensesRepository.GetAll();
+            var expenses = await _expensesRepository.GetAll(null);
 
             var result = expenses
                 .Select(x => new ExpenseResponse(x.Id, x.Name, x.Amount, x.OccuredAt, x.Category.Name))

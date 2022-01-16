@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Budy.Application.Expenses.Queries;
 using Budy.Application.Expenses.Responses;
 using Budy.Application.Interfaces;
+using Budy.Domain.Exceptions;
 using MediatR;
 
 namespace Budy.Application.Expenses.QueryHandlers
@@ -21,8 +22,7 @@ namespace Budy.Application.Expenses.QueryHandlers
         {
             if (!await _expensesRepository.Exists(request.Id))
             {
-                throw new ArgumentException(nameof(request.Id));
-                // @TODO Throw Domain Exception
+                throw ExpenseNotFoundException.ForId(request.Id);
             }
             
             var expense = await _expensesRepository.GetById(request.Id);
