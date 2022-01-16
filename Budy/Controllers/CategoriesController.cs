@@ -8,10 +8,12 @@ using Budy.Application.Categories.Requests;
 using Budy.Application.Categories.Responses;
 using Budy.Domain.Exceptions;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Budy.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriesController : ControllerBase

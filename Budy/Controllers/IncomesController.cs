@@ -66,7 +66,7 @@ namespace Budy.Controllers
 
                 return CreatedAtAction(nameof(GetById), new {Id = incomeId});
             }
-            catch (Exception e)
+            catch (CategoryNotFoundException e)
             {
                 return BadRequest(e.Message);
             }

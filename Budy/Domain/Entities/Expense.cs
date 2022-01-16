@@ -10,6 +10,8 @@ namespace Budy.Domain.Entities
         public DateTime OccuredAt { get; set; }
         public Category Category { get; set; }
 
+        private Expense() { }
+
         public Expense(string name, decimal amount, DateTime occuredAt, Category category)
         {
             Name = name;

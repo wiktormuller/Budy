@@ -8,10 +8,12 @@ using Budy.Application.Expenses.Requests;
 using Budy.Application.Expenses.Responses;
 using Budy.Domain.Exceptions;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Budy.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class ExpensesController : ControllerBase

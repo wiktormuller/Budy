@@ -1,18 +1,17 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Budy.Application.Expenses.Commands;
+using Budy.Application.Interfaces;
 using Budy.Domain.Exceptions;
-using Budy.Infrastructure.Repositories;
 using MediatR;
 
 namespace Budy.Application.Expenses.CommandHandlers
 {
     public class DeleteExpenseCommandHandler : IRequestHandler<DeleteExpenseCommand>
     {
-        private readonly ExpensesRepository _expensesRepository;
+        private readonly IExpensesRepository _expensesRepository;
         
-        public DeleteExpenseCommandHandler(ExpensesRepository expensesRepository)
+        public DeleteExpenseCommandHandler(IExpensesRepository expensesRepository)
         {
             _expensesRepository = expensesRepository;
         }

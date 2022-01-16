@@ -7,11 +7,14 @@ using Budy.Application.Expenses.Filters;
 using Budy.Application.Expenses.Queries;
 using Budy.Application.Expenses.Responses;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Budy.Controllers
 {
+    [Authorize]
     [ApiController]
+    [Route("api/[controller]")]
     public class BalancesController : ControllerBase
     {
         private readonly IMediator _mediator;
