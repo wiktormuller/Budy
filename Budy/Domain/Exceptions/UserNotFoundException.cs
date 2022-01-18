@@ -8,5 +8,8 @@ namespace Budy.Domain.Exceptions
 
         public static UserNotFoundException Default() =>
             new UserNotFoundException($"Username or password is incorrect.");
+
+        public static UserNotFoundException ForEmail(string email) =>
+            new UserNotFoundException($"User with email: #'{email} was not found.'");
     }
 }

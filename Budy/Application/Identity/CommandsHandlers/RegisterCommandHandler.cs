@@ -14,7 +14,7 @@ namespace Budy.Application.Identity.CommandsHandlers
     public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterResponse>
     {
         private readonly UserManager<User> _userManager;  
-        private readonly RoleManager<Role> _roleManager;  
+        private readonly RoleManager<Role> _roleManager;
         private readonly IConfiguration _configuration; 
         
         public RegisterCommandHandler(UserManager<User> userManager, 
@@ -28,11 +28,11 @@ namespace Budy.Application.Identity.CommandsHandlers
         
         public async Task<RegisterResponse> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
-            var existingUser = await _userManager.FindByNameAsync(request.Username);
+            var existingUser = await _userManager.FindByEmailAsync(request.Email);
 
             if (existingUser is not null) // User already exists
             {
-                throw UserAlreadyExistsException.ForUsername(request.Username);
+                throw UserAlreadyExistsException.ForEmail(request.Username);
             }
 
             var newUser = new User

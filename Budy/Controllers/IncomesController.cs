@@ -26,6 +26,11 @@ namespace Budy.Controllers
         [HttpGet]
         public async Task<ActionResult<List<IncomeResponse>>> GetAll([FromQuery] GetAllIncomesFilter filter)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            
             var query = new GetAllIncomesQuery();
 
             return Ok(await _mediator.Send(query));

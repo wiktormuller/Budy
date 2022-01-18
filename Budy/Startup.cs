@@ -5,9 +5,11 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Budy.Application.Interfaces;
+using Budy.Application.Validators;
 using Budy.Domain.Entities;
 using Budy.Infrastructure.Persistence.DbContexts;
 using Budy.Infrastructure.Repositories;
+using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -45,6 +47,9 @@ namespace Budy
             services.AddTransient<IIncomesRepository, IncomesRepository>();
             
             services.AddMediatR(Assembly.GetExecutingAssembly());
+            services.AddMvc()
+                .AddFluentValidation(
+                    fv => fv.RegisterValidatorsFromAssemblyContaining<CreateCategoryRequestValidator>());
             
             // For Entity Framework  
             services.AddDbContext<BudyDbContext>(options => options.UseSqlServer(

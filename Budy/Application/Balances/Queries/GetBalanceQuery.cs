@@ -1,4 +1,5 @@
 ﻿using System;
+using Budy.Application.Balances.Responses;
 using MediatR;
 
 namespace Budy.Application.Balances.Queries

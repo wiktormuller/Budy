@@ -18,7 +18,7 @@ namespace Budy.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost("/login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             var command = new LoginCommand(request.Username, request.Password);
@@ -34,7 +34,7 @@ namespace Budy.Controllers
             }
         }
 
-        [HttpPost("/register")]
+        [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             var command = new RegisterCommand(request.Username, request.Email, request.Password);
@@ -53,22 +53,6 @@ namespace Budy.Controllers
                 }
             }
             catch (UserAlreadyExistsException e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
-        [HttpPost("/register-admin")]
-        public async Task<IActionResult> RegisterAdmin([FromBody] RegisterRequest request)
-        {
-            var command = new RegisterCommand(request.Username, request.Email, request.Password);
-            
-            try
-            {
-                var response = await _mediator.Send(command);
-                return Ok(response);
-            }
-            catch (Exception e)
             {
                 return BadRequest(e.Message);
             }

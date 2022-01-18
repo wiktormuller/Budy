@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Budy.Application.Balances.Queries;
+using Budy.Application.Balances.Responses;
 using Budy.Application.Interfaces;
 using MediatR;
 

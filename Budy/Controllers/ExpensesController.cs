@@ -28,6 +28,11 @@ namespace Budy.Controllers
         [HttpGet]
         public async Task<ActionResult<List<ExpenseResponse>>> GetAll([FromQuery] GetAllExpensesFilter filter)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            
             var query = new GetAllExpensesQuery();
             
             return Ok(await _mediator.Send(query));

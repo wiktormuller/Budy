@@ -1,4 +1,4 @@
-﻿namespace Budy.Application.Balances
+﻿namespace Budy.Application.Balances.Responses
 {
     public class BalanceResponse
     {
