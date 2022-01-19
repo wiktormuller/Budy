@@ -8,11 +8,13 @@ using Budy.Application.Income.Requests;
 using Budy.Application.Income.Responses;
 using Budy.Domain.Exceptions;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Budy.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class IncomesController : ControllerBase
     {

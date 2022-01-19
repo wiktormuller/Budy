@@ -3,13 +3,16 @@ using System.Threading.Tasks;
 using Budy.Application.UsersRoles.Commands;
 using Budy.Application.UsersRoles.Queries;
 using Budy.Application.UsersRoles.Requests;
+using Budy.Domain;
 using Budy.Domain.Exceptions;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Budy.Controllers
 {
     [ApiController]
+    [Authorize(Roles = UserRoles.Admin)]
     [Route("api/[controller]")]
     public class UsersRolesController : ControllerBase
     {

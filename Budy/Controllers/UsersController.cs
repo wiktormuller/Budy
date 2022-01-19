@@ -1,11 +1,14 @@
 ﻿using System.Threading.Tasks;
 using Budy.Application.Users.Queries;
+using Budy.Domain;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Budy.Controllers
 {
     [ApiController]
+    [Authorize(Roles = UserRoles.Admin)]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
