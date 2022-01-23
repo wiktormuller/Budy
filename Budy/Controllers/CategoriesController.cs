@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Budy.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriesController : ControllerBase
@@ -61,7 +61,7 @@ namespace Budy.Controllers
 
             var categoryId = await _mediator.Send(command);
 
-            return CreatedAtAction(nameof(GetById), new {Id = categoryId});
+            return CreatedAtAction(nameof(Create), new {Id = categoryId});
         }
 
         [HttpPut("{id}")]

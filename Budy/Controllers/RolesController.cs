@@ -44,8 +44,8 @@ namespace Budy.Controllers
             {
                 var command = new CreateRoleCommand(request.Name);
                 var roleId = await _mediator.Send(command);
-                
-                return StatusCode((int)HttpStatusCode.Created, new {Id = roleId});
+
+                return CreatedAtRoute(nameof(CreateRole), new {Id = roleId});
             }
             catch (RoleAlreadyExistsException exception)
             {

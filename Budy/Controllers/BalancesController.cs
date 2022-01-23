@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Budy.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class BalancesController : ControllerBase

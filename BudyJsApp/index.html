@@ -1,4 +1,3 @@
-<!-- www.youtube.com/CodeExplained -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,8 +8,14 @@
 </head>
 <body>
     <div class="budget-container">
+        <!-- Rounded switch -->
+        <label class="switch">
+            <input class="toggleBtn" type="checkbox">
+            <span class="slider round"></span>
+        </label>
+        <a href="register.html" style="color: white;">Register | Login</a>
         <div class="app-title">
-            <a href="">Code<b>Explained</b></a>
+            <a href=""><b>Budy - Budget App</b></a>
         </div>
         <div class="budget-header">
             <div class="balance">
@@ -53,6 +58,8 @@
                 <div class="input">
                     <input type="text" id="income-title-input" name="title" placeholder="Title">
                     <input type="number" id="income-amount-input" name="amount" placeholder="$0">
+                    <input type="number" id="income-categoryid-input" name="categoryid" placeholder="Category Id">
+                    <input type="text" id="income-occuredat-input" name="occuredat" placeholder="Occured At">
                     <div class="add-income"><img src="icon/plus.png" alt=""></div>
                 </div>
             </div>
@@ -61,6 +68,8 @@
                 <div class="input">
                     <input type="text" id="expense-title-input" name="title" placeholder="Title">
                     <input type="number" id="expense-amount-input" name="amount" placeholder="$0">
+                    <input type="number" id="expense-categoryid-input" name="categoryid" placeholder="Category Id">
+                    <input type="text" id="expense-occuredat-input" name="occuredat" placeholder="Occured At">
                     <div class="add-expense"><img src="icon/plus.png" alt=""></div>
                 </div>
             </div>

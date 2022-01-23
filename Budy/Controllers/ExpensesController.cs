@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Budy.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class ExpensesController : ControllerBase
@@ -66,12 +66,13 @@ namespace Budy.Controllers
                 {
                     Name = request.Name,
                     Amount = request.Amount,
-                    CategoryId = request.CategoryId
+                    CategoryId = request.CategoryId,
+                    OccuredAt = request.OccuredAt
                 };
 
                 var expenseId = await _mediator.Send(command);
                 
-                return CreatedAtAction(nameof(GetById), new {Id = expenseId});
+                return CreatedAtAction(nameof(Create), new {Id = expenseId});
             }
             catch (CategoryNotFoundException e)
             {

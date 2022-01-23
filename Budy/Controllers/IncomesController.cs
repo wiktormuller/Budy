@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Budy.Controllers
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     public class IncomesController : ControllerBase
     {
@@ -71,7 +71,7 @@ namespace Budy.Controllers
                 };
                 var incomeId = await _mediator.Send(command);
 
-                return CreatedAtAction(nameof(GetById), new {Id = incomeId});
+                return CreatedAtAction(nameof(Create), new {Id = incomeId});
             }
             catch (CategoryNotFoundException e)
             {

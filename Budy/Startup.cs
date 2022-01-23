@@ -47,7 +47,10 @@ namespace Budy
             services.AddTransient<IIncomesRepository, IncomesRepository>();
             
             services.AddMediatR(Assembly.GetExecutingAssembly());
-            services.AddMvc()
+            services.AddMvc(options =>
+                {
+                    options.SuppressAsyncSuffixInActionNames = false;
+                })
                 .AddFluentValidation(
                     fv => fv.RegisterValidatorsFromAssemblyContaining<CreateCategoryRequestValidator>());
             
@@ -96,6 +99,11 @@ namespace Budy
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            
+            app.UseCors(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
 
             app.UseAuthentication();
             app.UseAuthorization();

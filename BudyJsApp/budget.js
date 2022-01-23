@@ -15,23 +15,25 @@ const allList = document.querySelector("#all .list");
 const expenseBtn = document.querySelector(".tab1");
 const incomeBtn = document.querySelector(".tab2");
 const allBtn = document.querySelector(".tab3");
+const toggleBtn = document.querySelector(".toggleBtn");
 
 // INPUT BTS
 const addExpense = document.querySelector(".add-expense");
 const expenseTitle = document.getElementById("expense-title-input");
 const expenseAmount = document.getElementById("expense-amount-input");
+const expenseCategoryId = document.getElementById("expense-categoryid-input");
+const expenseOccuredAt = document.getElementById("expense-occuredat-input");
 
 const addIncome = document.querySelector(".add-income");
 const incomeTitle = document.getElementById("income-title-input");
 const incomeAmount = document.getElementById("income-amount-input");
+const incomeCategoryId = document.getElementById("income-categoryid-input");
+const incomeOccuredAt = document.getElementById("income-occuredat-input");
 
 // VARIABLES
-let ENTRY_LIST;
 let balance = 0, income = 0, outcome = 0;
 const DELETE = "delete", EDIT = "edit";
 
-// LOOK IF THERE IS SAVED DATA IN LOCALSTORAGE
-ENTRY_LIST = JSON.parse(localStorage.getItem("entry_list")) || [];
 updateUI();
 
 // EVENT LISTENERS
@@ -53,18 +55,30 @@ allBtn.addEventListener("click", function(){
     active( allBtn );
     inactive( [incomeBtn, expenseBtn] );
 })
+toggleBtn.addEventListener("click", function(){
+    var color = window.getComputedStyle(document.body,"").getPropertyValue("background-color");
+    if(color == "rgb(34, 34, 34)")
+    {
+        document.body.style.backgroundColor = "#34006a";
+    }
+    else
+    {
+        document.body.style.backgroundColor = "#222";
+    }
+})
 
 addExpense.addEventListener("click", function(){
     // IF ONE OF THE INPUTS IS EMPTY => EXIT
-    if(!expenseTitle.value || !expenseAmount.value ) return;
+    if(!expenseTitle.value || !expenseAmount.value || expenseCategoryId.value || expenseOccuredAt.value) return;
 
     // SAVE THE ENTRY TO ENTRY_LIST
     let expense = {
         type : "expense",
         title : expenseTitle.value,
-        amount : parseInt(expenseAmount.value)
+        amount : parseInt(expenseAmount.value),
+        categoryId : parseInt(expenseCategoryId.value),
+        occuredAt : expenseOccuredAt.value
     }
-    ENTRY_LIST.push(expense);
 
     updateUI();
     clearInput( [expenseTitle, expenseAmount] )
@@ -72,15 +86,15 @@ addExpense.addEventListener("click", function(){
 
 addIncome.addEventListener("click", function(){
     // IF ONE OF THE INPUTS IS EMPTY => EXIT
-    if(!incomeTitle.value || !incomeAmount.value ) return;
+    if(!incomeTitle.value || !incomeAmount.value || incomeCategoryId.value || incomeOccuredAt.value) return;
 
     // SAVE THE ENTRY TO ENTRY_LIST
     let income = {
-        type : "income",
-        title : incomeTitle.value,
-        amount : parseInt(incomeAmount.value)
+        name : incomeTitle.value,
+        amount : parseInt(incomeAmount.value),
+        categoryId : parseInt(incomeCategoryId.value),
+        occuredAt : incomeOccuredAt.value
     }
-    ENTRY_LIST.push(income);
 
     updateUI();
     clearInput( [incomeTitle, incomeAmount] )
@@ -91,73 +105,134 @@ expenseList.addEventListener("click", deleteOrEdit);
 allList.addEventListener("click", deleteOrEdit);
 
 // HELPERS
-
 function deleteOrEdit(event){
     const targetBtn = event.target;
 
     const entry = targetBtn.parentNode;
 
-    if( targetBtn.id == DELETE ){
+    if( targetBtn.id == "delete"){
         deleteEntry(entry);
-    }else if(targetBtn.id == EDIT ){
+    }else if(targetBtn.id == "edit" ){
         editEntry(entry);
     }
 }
 
 function deleteEntry(entry){
-    ENTRY_LIST.splice( entry.id, 1);
+    console.log(entry.id);
+    if(entry.classList[0] == "income")
+    {
+        fetch('https://localhost:5001/api/Incomes' + '/' + entry.id, {
+            method: 'delete'
+        })
+        .then();
+    }
+
+    if(entry.classList[0] == "expense")
+    {
+        fetch('https://localhost:5001/api/Expenses' + '/' + entry.id, {
+            method: 'delete'
+        })
+        .then();
+    }
 
     updateUI();
 }
 
 function editEntry(entry){
-    console.log(entry)
-    let ENTRY = ENTRY_LIST[entry.id];
-
-    if(ENTRY.type == "income"){
-        incomeAmount.value = ENTRY.amount;
-        incomeTitle.value = ENTRY.title;
-    }else if(ENTRY.type == "expense"){
-        expenseAmount.value = ENTRY.amount;
-        expenseTitle.value = ENTRY.title;
+    if(entry.classList[0] == "income"){
+        fetch("https://localhost:5001/api/Incomes",{
+            method: 'PUT',
+            headers:{
+            'Content-Type':'application/json'
+            },
+            body: JSON.stringify({name:entry.name, amount:entry.amount, occuredAt:entry.occuredAt, categoryId:entry.categoryId})
+        })
+    }
+    else if(entry.classList[0] == "expense"){
+        fetch("https://localhost:5001/api/Expenses",{
+            method: 'PUT',
+            headers:{
+            'Content-Type':'application/json'
+            },
+            body: JSON.stringify({name:entry.name, amount:entry.amount, occuredAt:entry.occuredAt, categoryId:entry.categoryId})
+        })
     }
 
-    deleteEntry(entry);
+    updateUI();
 }
 
 function updateUI(){
-    income = calculateTotal("income", ENTRY_LIST);
-    outcome = calculateTotal("expense", ENTRY_LIST);
-    balance = Math.abs(calculateBalance(income, outcome));
-
-    // DETERMINE SIGN OF BALANCE
-    let sign = (income >= outcome) ? "$" : "-$";
-
+    
     // UPDATE UI
-    balanceEl.innerHTML = `<small>${sign}</small>${balance}`;
-    outcomeTotalEl.innerHTML = `<small>$</small>${outcome}`;
-    incomeTotalEl.innerHTML = `<small>$</small>${income}`;
+    fetch('https://localhost:5001/api/Balances/actual')
+    .then(response => response.json())
+    .then(data =>
+    {
+        let balance = 0;
+        balance = data.balanceAmount;
+        balanceEl.innerHTML = `${balance} <small>PLN</small>`;
+    })
+
+    fetch('https://localhost:5001/api/Expenses')
+    .then(response => response.json())
+    .then(data =>
+    {
+        var outcome = 0;
+        outcome = data.map(expense => expense.amount).reduce((acc, expense) => acc + expense, 0);
+        outcomeTotalEl.innerHTML = `${outcome} <small>PLN</small>`;
+    })
+    
+    fetch('https://localhost:5001/api/Incomes')
+    .then(response => response.json())
+    .then(data =>
+    {
+        var income = 0;
+        income = data.map(inc => inc.amount).reduce((acc, inc) => acc + inc, 0);
+        incomeTotalEl.innerHTML = `${income} <small>PLN</small>`;
+    })
 
     clearElement( [expenseList, incomeList, allList] );
 
-    ENTRY_LIST.forEach( (entry, index) => {
-        if( entry.type == "expense" ){
-            showEntry(expenseList, entry.type, entry.title, entry.amount, index)
-        }else if( entry.type == "income" ){
-            showEntry(incomeList, entry.type, entry.title, entry.amount, index)
-        }
-        showEntry(allList, entry.type, entry.title, entry.amount, index)
-    });
+    fetch('https://localhost:5001/api/Expenses')
+    .then(response => response.json())
+    .then(data =>
+    {
+        Object.entries(data).forEach( (expense) => {
+            showEntry(expenseList, "expense", expense[1].name, expense[1].amount, expense[1].id);
+        });
+    })
+
+    fetch('https://localhost:5001/api/Incomes')
+    .then(response => response.json())
+    .then(data =>
+    {
+        Object.entries(data).forEach( (income) => {
+            showEntry(incomeList, "income", income[1].name, income[1].amount, income[1].id);
+        });
+    })
+
+    fetch('https://localhost:5001/api/Entries')
+    .then(response => response.json())
+    .then(data =>
+    {
+        Object.entries(data).forEach( (entry) => {
+
+            showEntry(allList, entry[1].type, entry[1].name, entry[1].amount, entry[1].id);
+        });
+    })
+
+    if(toggleBtn.checked)
+    {
+
+    }
 
     updateChart(income, outcome);
-
-    localStorage.setItem("entry_list", JSON.stringify(ENTRY_LIST));
 }
 
 function showEntry(list, type, title, amount, id){
 
     const entry = ` <li id = "${id}" class="${type}">
-                        <div class="entry">${title}: $${amount}</div>
+                        <div class="entry">${title}: ${amount} PLN</div>
                         <div id="edit"></div>
                         <div id="delete"></div>
                     </li>`;
@@ -171,22 +246,6 @@ function clearElement(elements){
     elements.forEach( element => {
         element.innerHTML = "";
     })
-}
-
-function calculateTotal(type, list){
-    let sum = 0;
-
-    list.forEach( entry => {
-        if( entry.type == type ){
-            sum += entry.amount;
-        }
-    })
-
-    return sum;
-}
-
-function calculateBalance(income, outcome){
-    return income - outcome;
 }
 
 function clearInput(inputs){

@@ -1,20 +1,17 @@
 ﻿using System.Threading.Tasks;
-using Budy.Application.Users.Queries;
-using Budy.Domain;
+using Budy.Application.Entries.Queries;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Budy.Controllers
 {
     [ApiController]
-    //[Authorize(Roles = UserRoles.Admin)]
     [Route("api/[controller]")]
-    public class UsersController : ControllerBase
+    public class EntriesController : ControllerBase
     {
         private readonly IMediator _mediator;
         
-        public UsersController(IMediator mediator)
+        public EntriesController(IMediator mediator)
         {
             _mediator = mediator;
         }
@@ -22,7 +19,7 @@ namespace Budy.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var query = new GetAllUsersQuery();
+            var query = new GetAllEntriesQuery();
 
             return Ok(await _mediator.Send(query));
         }

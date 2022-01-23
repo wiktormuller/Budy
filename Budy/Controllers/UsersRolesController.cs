@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Budy.Controllers
 {
     [ApiController]
-    [Authorize(Roles = UserRoles.Admin)]
+    //[Authorize(Roles = UserRoles.Admin)]
     [Route("api/[controller]")]
     public class UsersRolesController : ControllerBase
     {
@@ -32,7 +32,7 @@ namespace Budy.Controllers
 
                 var userEmail = await _mediator.Send(command);
                 
-                return CreatedAtAction(nameof(GetByEmail), new {Email = userEmail});
+                return CreatedAtAction(nameof(Create), new {Email = userEmail});
             }
             catch (Exception exception) when (exception is UserNotFoundException
                 || exception is RoleNotFoundException)
